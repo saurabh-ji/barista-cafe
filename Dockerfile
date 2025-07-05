@@ -1,17 +1,22 @@
-FROM nginx:alpine
+# Use official Apache image as base
+FROM httpd:2.4
 
-# Set working directory
-WORKDIR /usr/share/nginx/html
+# Set working directory inside the container
+WORKDIR /usr/local/apache2/htdocs/
 
-# Remove the default nginx static assets
+# Remove any default content
 RUN rm -rf ./*
 
-# Copy your static site files into the container
+# Copy your website files into the Apache root
 COPY . .
 
-# Expose port 5000
+# Expose port 5000 (Apache default is 80, but we want 5000 externally)
 EXPOSE 5000
 
-# Override the default command to run Nginx on port 5000
-CMD ["nginx", "-g", "daemon off;", "-c", "/etc/nginx/nginx.conf"]
+# Override Apache's default listening port from 80 to 5000
+RUN sed -i 's/Listen 80/Listen 5000/' /usr/local/apache2/conf/httpd.conf
+
+# Entry point to run Apache in foreground
+CMD ["httpd-foreground"]
+
 
