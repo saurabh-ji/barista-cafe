@@ -1,4 +1,3 @@
-e the official Nginx base image
 FROM nginx:alpine
 
 # Set working directory
